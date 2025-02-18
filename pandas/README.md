@@ -500,3 +500,64 @@ print(result)
 # B              30
 # C              15
 ```
+
+### 3.4 处理缺失值
+在 pandas 中，处理缺失值是数据清理和准备工作中的一个重要部分，因为缺失值会影响数据分析和模型的性能。
+#### 3.4.1 识别缺失值
+`isna()` 或 `isnull()`：这两个函数用于检测 DataFrame 或 Series 中的`缺失值（NaN）`，返回一个相同形状的布尔型对象，其中缺失值位置为 `True`。
+```python
+df = pd.DataFrame({
+    'A': [1, 2, None, 4],
+    'B': [None, 2, 3, 4]
+})
+
+print(df.isna())
+#        A      B
+# 0  False   True
+# 1  False  False
+# 2   True  False
+# 3  False  False
+```
+
+#### 3.4.2 删除缺失值
+使用 `dropna()` 删除包含缺失值的行或列。
+- `axis`：用于选择操作的轴，`axis=0` 删除含有缺失值的行，`axis=1` 删除含有缺失值的列。
+- `how`：设置为 `any`（任何含有缺失值的行或列都删除）或 `all`（只有全部为缺失值的行或列才删除）。
+```python
+df = pd.DataFrame({
+    'A': [1, None, 3],
+    'B': [4, 5, None],
+    'C': [None, None, None]
+})
+```
+删除任何含有缺失值的行：
+```python
+dfx = df.dropna(axis=0, how='any')
+print(dfx)
+# Empty DataFrame
+# Columns: [A, B, C]
+# Index: []
+```
+删除所有值均为缺失的列：
+```python
+dfx = df.dropna(axis=1, how='all')
+print(dfx)
+#      A    B
+# 0  1.0  4.0
+# 1  NaN  5.0
+# 2  3.0  NaN
+```
+
+#### 3.4.3 填充缺失值
+使用 `fillna()` 填充缺失值，可以指定一个固定的值或使用不同的填充策略。可以填充一个固定的值，如 `0`，或者一个计算出的值，如列的`平均值`或`中位数`。`method` 参数可以是 `ffill（前向填充）`或 `bfill（后向填充）`，用于填充方法。
+```python
+df_filled = df.fillna(0) # 使用0填充所有缺失值
+df_filled_ffill = df.fillna(method='ffill') # 使用前一个值填充缺失值
+df_filled_mean = df.fillna(df.mean()) # 使用列的平均值填充缺失值
+```
+
+#### 3.4.4 使用插值方法
+使用 `interpolate()` 填充缺失值，尤其是时间序列数据。默认情况下，`interpolate()` 使用线性插值，但也可以通过 `method` 参数选择不同的插值方法，如 `polynomial`, `time` 等。
+```python
+df_interpolated = df.interpolate()
+```
