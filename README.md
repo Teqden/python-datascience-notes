@@ -16,5 +16,7 @@
 <br>
 [课堂随测与解析](https://github.com/Teqden/python-datascience-notes/blob/main/theory-knowledge/excerise/README.md)
 <br>
+[实际应用](https://github.com/Teqden/python-datascience-notes/blob/main/practical-usage/README.md)
+<br>
 <br>
 或者使用Jupyter Notebook（推荐Anaconda平台）打开`.ipynb`文件。
