@@ -202,31 +202,124 @@ Models are representations of reality used to understand, predict, or control re
 - Predicts a continuous numerical value (target) based on input features. 根据输入特征预测连续的数值（目标）。
 - Tries to find the relationship between the features and the target. 尝试找出特征与目标之间的关系。
 
-### 5.3 Visualization Techniques 可视化技术
-- **Scatter Plot 散点图**:
-  - Shows how multiple variables move together. 显示多个变量如何一起移动。
-  - Each axis represents a variable. 每个轴代表一个变量。
-  - Shows trends (correlation). 显示趋势（相关性）。
-  - Ideal for paired numerical values. 适用于成对的数值。
-  - Dependent variable on Y-axis (the target). 依赖变量在Y轴上（目标）。
-- **Line Graph 线图**:
-  - Connects the data points in a scatter plot using a line. 使用线连接散点图中的数据点。
-  - Used to show data over time (X-axis = time). 用于显示随时间变化的数据（X轴=时间）。
-  - Connects datapoints, showing patterns. 连接数据点，显示模式。
-  - May mislead if the line between datapoints does not represent actual data points. 如果线条之间的数据点不代表实际数据点，可能会导致误解。
-
-### 5.4 Benchmark Models 基准模型
-- A benchmark provides a baseline for comparing more advanced models. 基准提供了一个比较更高级模型的基线。
+### 5.3 Benchmark Models 基准模型
+- A benchmark provides a baseline for more advanced models. 基准提供了一个给更高级模型的基线。
 - Simple. 简单。Interpretable. 可解释。
 
-### 5.5 Metrics 指标
-- **Mean Absolute Error (MAE) 平均绝对误差**:
-  - An evaluation metric for regression models. 回归模型的评估指标。
-  - The average of the absolute differences between the actual values and the predicted values. 实际值与预测值之间绝对差的平均值。
+### 5.4 Metrics 指标
+**Metrics**（指标）用于衡量模型的性能。
 
-### 5.6 Training & Testing
-- Data needs to be split into a **train set** and a **test set**. 数据需要分为**训练集**和**测试集**。
-  - Train data helps discover the right patterns. 训练数据帮助发现正确的模式。
-  - Test data checks if the model can generalize to new, never-seen-before data. 测试数据检查模型是否能概括到新的、从未见过的数据。
-- Common splits include **70%-30%** or **80%-20%** (train-test). 常见的分割包括**70%-30%**或**80%-20%**（训练-测试）。
-- Evaluation metrics tend to be better when testing the model on the train set than on the test set. 当在训练集上测试模型时，评估指标往往比在测试集上更好。
+- **Mean Absolute Error (MAE) 平均绝对误差**  
+  - **适用于回归模型的评估指标**（An metric for regression models）。  
+  - 计算方法：实际值与预测值之间**绝对误差的平均值**（The average of the absolute differences between the actual values and the predicted values）。  
+  - **特点**：MAE 对所有误差给予相同的权重（MAE treats all errors equally）。
+
+- **Mean Squared Error (MSE) 均方误差**  
+  - 与 MAE 不同，MSE 计算的是**误差的平方**（Instead of taking the absolute error, you take the squared error）。  
+  - **特点**：较大的误差在平方后变得更大，因此 MSE 会**惩罚较大的误差**（MSE punishes larger errors more when that is important）。
+
+- **Root Mean Squared Error (RMSE) 均方根误差**  
+  - RMSE 是 MSE 的平方根，能够更直观地表示误差的实际大小。  
+
+### 5.5 Training & Testing 训练与测试
+模型的质量取决于在**训练集-测试集划分**（test-train split）后的表现。
+
+- 数据需要分为 **训练集（train set）** 和 **测试集（test set）**（Data needs to be split into a train set and a test set）。  
+  - **训练数据**（Train data）用于帮助发现正确的模式（helps discover the right patterns）。  
+  - **测试数据**（Test data）用于检查模型是否能泛化到新的、未见过的数据（checks if the model can generalize to new, never-seen-before data）。  
+
+- 常见的**训练-测试集划分比例**（Common splits）：**70%-30%** 或 **80%-20%**（train-test）。  
+
+- **在训练集上测试时，评估指标通常优于测试集**（Evaluation metrics tend to be better when testing the model on the train set than on the test set）。
+
+## 6. Evaluation 评估
+1. **评估模型性能**（Assess model performance）。  
+2. **解释结果**（Interpretation of results）。  
+3. **识别模型的局限性**（Identify limitations of the model）。  
+4. **确定下一步**（Determining next steps）。  
+
+**关键问题**：
+- **是否达到了业务目标？**（Did you meet the business objectives?）  
+- **模型的结果如何帮助业务目标？**（How does the model (result) add to the business objective?）  
+- **是否达到了数据挖掘目标？**（Did you meet the data mining goals?）  
+- **模型存在哪些类型的误差？**（What types of errors does the model make?）  
+- **误差是否均匀分布，还是存在特定模式？（例如低估高值）**（Are all errors “the same” or are there specific patterns (e.g. underestimating high values)）  
+- **哪些因素可能影响模型表现？**（What might be (negatively) influencing the performance of the model?）  
+  - 例如：**数据质量问题、缺失数据/特征、模型过于简单**（E.g. data quality issues, missing data/features, simplistic model）。  
+- **模型是否能泛化训练数据中的模式到测试数据？**（Was the model able to generalize patterns from training data to test data?）  
+- **训练集与测试集的表现是否有较大差异？**（Is there a big difference between train performance and test performance?）  
+  - 若是，**可能存在过拟合（overfitting）**（If so… might the model be overfitted?）。  
+- **模型结果的主要洞见是什么？**（What are the key insights from the model results?）。  
+- **下一步应该做什么？**（What should be done next?）。  
+  - **进一步优化**（Further refinement）。  
+  - **部署建议**（Recommendations for deployment）。
+
+## 7. Classification & Merging 分类与合并
+### 7.1 **Classification 分类**
+- **分类（Classification）是一种监督学习（supervised machine learning）方法**。  
+- **目标变量是分类变量（categorical），即标签类别或分类**（The target is categorical, a labeled class or category）。  
+
+### 7.2 **Visualization 可视化**
+可视化的作用：
+- **揭示模式、趋势和相关性**（Reveal patterns, trends, and correlations）。  
+- **对大型数据集进行可视化总结**（Visually summarize large datasets）。  
+- **识别异常值或离群点**（Identify outliers or anomalies）。  
+- **有效传达研究发现**（Help communicate findings effectively）。  
+
+### 7.2.1 常见图表
+
+**直方图（Histogram）**
+- **用于显示数值数据的分布**（Used to show the distribution of numerical data）。  
+- **数据被分到不同的区间（Bins）**（Data is grouped into intervals (bins)）。  
+- **每个柱子代表该区间内的数据数量（频率）**（Each bar represents the frequency of data within that range）。  
+- **X 轴表示数值区间，Y 轴表示数据点的数量**（X-axis represents value ranges, Y-axis represents the count of data points）。 
+
+**条形图（Bar Plot）**
+- **用于比较类别数据的数值大小**（Compare categorical data based on numeric values）。  
+- **可视化计数或均值**（Visualizing counts or averages）。  
+- **不同于直方图（Histogram）**（Not to be mistaken with a histogram）。  
+<br>
+
+**直方图 vs. 条形图**
+| 特性        | 直方图（Histogram） | 条形图（Bar Plot） |
+|------------|--------------------|-------------------|
+| **数据类型** | 数值数据（Numerical Data） | 分类数据（Categorical Data） |
+| **X 轴**    | 数值区间（Bins）     | 不同类别（Categories） |
+| **柱子间隔** | **无间隔**（连续）    | **有间隔**（分离） |
+| **用途**    | 数据分布、频率分析   | 类别数据比较 |
+
+<br>
+<br>
+
+**散点图（Scatter Plot）**
+- **展示两个数值变量之间的关系**（Shows relationship between 2 numerical variables）。  
+- **数据点在网格上绘制**（Plot the data points on a grid）。  
+- **用于识别相关性、聚类或趋势**（Identifying correlations, clusters, or trends）。  
+- **显示多个变量如何一起变化**（Shows how multiple variables move together）。  
+- **每个轴代表一个变量**（Each axis represents a variable）。  
+- **适用于成对的数值数据**（Ideal for paired numerical values）。  
+- **依赖变量通常放在 Y 轴（目标值）**（Dependent variable on Y-axis (the target)）。  
+
+**折线图（Line Graph）**
+- **用于可视化时间趋势或有序类别**（Visualize trends over time or ordered categories）。  
+- **适用于跟踪变化**（Used for tracking changes）。  
+- **适用于比较不同数据集**（Used for making comparisons）。  
+- **类似于散点图，但点是有序的（X 轴）**（Similar to a scatter plot, but the points are ordered (X-axis)）。  
+- **通过线连接散点图中的数据点**（Connects the data points in a scatter plot using a line）。  
+- **通常用于显示随时间变化的数据（X 轴 = 时间）**（Used to show data over time (X-axis = time)）。  
+- **连接数据点，显示模式**（Connects datapoints, showing patterns）。  
+- **如果数据点之间的线不代表真实数据，可能会产生误导**（May mislead if the line between datapoints does not represent actual data points）。  
+
+
+### 7.3 **Merging 数据合并**
+Pandas 提供类似 SQL 的合并功能。在合并数据集时，需要考虑两个关键点：
+1. **要合并的列名**（The column name to merge on）：在两个数据集中必须是相同的标识符。  
+2. **合并方式**（The way to merge）：`pandas.DataFrame.merge`。  
+
+**四种常见的合并方式**：
+- **Inner Join（内连接）**：仅保留两个数据集中匹配的行。  
+- **Full Join（全连接）**：保留两个数据集中的所有行，未匹配的部分填充 NaN。  
+- **Left Join（左连接）**：保留左侧数据集的所有行，并匹配右侧数据集中的数据。  
+- **Right Join（右连接）**：保留右侧数据集的所有行，并匹配左侧数据集中的数据。  
+
+![四种合并方式](../img/four-types-of-merge.png)
