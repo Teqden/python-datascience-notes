@@ -256,17 +256,112 @@ Models are representations of reality used to understand, predict, or control re
 
 ## 7. Classification & Merging 分类与合并
 ### 7.1 **Classification 分类**
-- **分类（Classification）是一种监督学习（supervised machine learning）方法**。  
-- **目标变量是分类变量（categorical），即标签类别或分类**（The target is categorical, a labeled class or category）。  
+- **分类（Classification）是一种监督学习（supervised machine learning）方法**。 
+  - Binary classification 二元分类: 2 possible classes (spam/not spam, fraud detection, disease detection) 有两个可能的类别（垃圾邮件/非垃圾邮件、欺诈检测、疾病检测）
+  - Multi-class classification 多类分类: >2 possible classes (types of fruit)
+- **目标变量是分类变量（categorical），即标签类别或分类**（The target is categorical, a labeled class or category） 大于两个可能的类别（水果类型）
 
-### 7.2 **Visualization 可视化**
+Classification algorithms attempt to find decision boundaries in the feature space that separate different classes.分类算法试图在特征空间中找到决策边界来区分不同的类别。<br>
+Different algorithms create different types of boundaries, they all try to divide into regions for different classes.不同的算法会创建不同类型的边界，但它们都试图为不同的类别划分成不同类别的区域。<br>
+A new data point gets its class predicted based on its position with regards to these boundaries.一个新的数据点会根据它在这些边界中的位置来预测其类别。
+
+### 7.2 Classification vs. Regression
+Regression models predict **continuous** values, using metrics like **MAE** and **MSE** for evaluation. 回归模型预测连续值，使用 MAE 和 MSE 等指标进行评估。<br>
+Classification models predict **discrete** categories, requiring different evaluation methods. 分类模型预测离散类别，需要不同的评估方法。<br>
+Regression: predicting house prices 预测房价<br>
+Classification: predicting whether a house will sell above asking price 预测房屋是否会以高于要价的价格出售
+
+### 7.3 **Merging 数据合并**
+Pandas 提供类似 SQL 的合并功能。在合并数据集时，需要考虑两个关键点：
+1. **要合并的列名**（The column name to merge on）：在两个数据集中必须是相同的标识符。  
+2. **合并方式**（The way to merge）：`pandas.DataFrame.merge`。  
+
+**四种常见的合并方式**：
+- **Inner Join（内连接）**：仅保留两个数据集中匹配的行。  
+- **Full Join（全连接）**：保留两个数据集中的所有行，未匹配的部分填充 NaN。  
+- **Left Join（左连接）**：保留左侧数据集的所有行，并匹配右侧数据集中的数据。  
+- **Right Join（右连接）**：保留右侧数据集的所有行，并匹配左侧数据集中的数据。
+
+![四种合并方式](../img/four-types-of-merge.png)
+
+### 7.4 Benchmark classification
+Rule based model (IF-THEN) 基于规则的模型
+- Explicit rules to classify instances 对实例进行分类的明确规则
+- Often derived from domain knowledge or data analysis 通常来自领域知识或数据分析
+- Follow an “if… then” principle, e.g. determining credit risk: 遵循 “如果......那么 ”原则，例如确定信用风险：
+  - IF age < 18 THEN risk = "low“
+  - IF age < 18 AND “student” THEN risk = "low“
+- Easy to interpret, might not capture nuanced patterns 易于解释，可能无法捕捉到细微的模式
+
+#### 7.4.1 Decision tree
+Flowchart structure for decision making 决策流程图结构
+- Nodes 节点 = features 特征
+- Branches 分支 = feature values 特征值
+- Leaves 叶 = predictions 预测
+Use nested if-else statements 使用嵌套的 if-else 语句
+
+![Decision Tree](../img/decision-tree.png)
+
+#### 7.4.2 Building rule-based models
+1. Identify key predictive features (data understanding!) 确定关键预测特征（了解数据！）
+2. Determine thresholds or conditions 确定阈值或条件
+3. Create IF-THEN rules 创建 IF-THEN 规则
+4. Combine rules (if needed/useful) 合并规则（如需要/有用）
+<br><br>
+
+- Ensure data quality issues have been tackled 确保数据质量问题得到解决
+- Check for possible rules based on data analysis/business logic (Document them + justification) 检查基于数据分析/业务逻辑的可能规则(记录这些规则并说明理由)
+- When trying out different/multiple rules: track improvement using metrics 尝试不同/多个规则时：使用指标跟踪改进情况
+- Use if-else statements for rule-based banchmark models 对基于规则的标记模型使用 if-else 语句
+- Use nested if-else statements for decision tree benchmark models 对决策树基准模型使用嵌套的 if-else 语句
+
+#### 7.4.3 Evaluating Classification Models
+- True Positive (TP) 真阳性: Correctly predicted the positive class 正确预测了阳性类别
+- True Negative (TN) 真阴性: Correctly predicted the negative class 正确预测了阴性类别
+- False Positive (FP) 假阳性: Incorrectly predicted the positive class (Type I error) 错误预测了阳性类别（I 类错误）
+- False Negative (FN) 假阴性: Incorrectly predicted the negative class (Type II error) 错误预测了阴性类别（II 类错误）
+
+##### 7.4.3.1 Confusion Matrix 混淆矩阵
+一般使用错误率（Error Rate）和准确率（Accuracy）作为评估指标（Evaluation Metrics）
+|Metric|Description|
+|--|--|
+|Error Rate (misclassification rate) 错误率（误分类率）|The amount of errors made `(FN+FP) / total` and `1 - accuracy` 错误数量|
+|Accuracy 准确率|The amount of times a correct prediction is made `(TP+TN) / total` and `1 - error rate` 正确预测的次数|
+|True Positive Rate (TPR) [sensitivity, recall, hit rate] 真阳性率（TPR）[敏感度、召回率、命中率]|How many of the actual positive instances were correctly predicted? `TP / (TP + FN)` 实际正确预测了多少个阳性实例|
+|True Negative Rate (TNR) [specificity, selectivity] 真阴性率（TNR）[特异性、选择性]|How many of the actual negative instances were correctly predicted? `TN / (TN + FP)` 实际正确预测了多少个阴性实例|
+|Positive Predictive Value (PPV) [precision] 阳性预测值（PPV）[精确度]|How many of the positive predictions were actually positive? `TP / (TP + FP)` 阳性预测中有多少实际上是阳性|
+
+<br>
+<br>
+
+**Sensitivity (Recall) 敏感度（召回率）vs Specificity 与特异性 vs Precision 准确率**
+- Sensitivity 敏感度: how well do we detect positives (lower false negatives) 我们如何很好地检测阳性（较低的假阴性）
+- Specificity 特异性: how well do we detect negatives (lower false positives) 我们如何很好地检测阴性（较低的假阳性）
+- Precision 准确率: when the model says 'yes,' how often is it right 当模型说“是”时，它正确的频率是多少
+
+<br>
+
+Scenario 1 – High Precision 准确度高<br>
+A fraud detection system flags 10 transactions, 9 of which are fraudulent. Precision = 90%. It misses 50 other fraudulent transactions (low recall).<br>
+假设目前有100笔交易，欺诈系统只检测了10笔欺诈交易出来，但实际上有60笔，它漏掉了50笔，说明它是低敏感度，但是10笔中9笔都是真的欺诈交易，说明准确度很高。
+<br>
+
+Scenario 2 – High Recall 敏感度高<br>
+<br>
+癌症检测，100个案例中查出95个有癌症，说明它是高敏感度，但是其中很多误诊（false positives），说明它的准确度不高。
+<br>
+
+There is a tradeoff between precision and recall. You can adjust thresholds to favor one over the other. 准确率和召回率之间存在权衡。您可以调整阈值以偏向其中一个。
+
+
+### 7.5 **Visualization 可视化**
 可视化的作用：
 - **揭示模式、趋势和相关性**（Reveal patterns, trends, and correlations）。  
 - **对大型数据集进行可视化总结**（Visually summarize large datasets）。  
 - **识别异常值或离群点**（Identify outliers or anomalies）。  
 - **有效传达研究发现**（Help communicate findings effectively）。  
 
-### 7.2.1 常见图表
+### 7.5.1 常见图表
 
 **直方图（Histogram）**
 - **用于显示数值数据的分布**（Used to show the distribution of numerical data）。  
@@ -309,17 +404,3 @@ Models are representations of reality used to understand, predict, or control re
 - **通常用于显示随时间变化的数据（X 轴 = 时间）**（Used to show data over time (X-axis = time)）。  
 - **连接数据点，显示模式**（Connects datapoints, showing patterns）。  
 - **如果数据点之间的线不代表真实数据，可能会产生误导**（May mislead if the line between datapoints does not represent actual data points）。  
-
-
-### 7.3 **Merging 数据合并**
-Pandas 提供类似 SQL 的合并功能。在合并数据集时，需要考虑两个关键点：
-1. **要合并的列名**（The column name to merge on）：在两个数据集中必须是相同的标识符。  
-2. **合并方式**（The way to merge）：`pandas.DataFrame.merge`。  
-
-**四种常见的合并方式**：
-- **Inner Join（内连接）**：仅保留两个数据集中匹配的行。  
-- **Full Join（全连接）**：保留两个数据集中的所有行，未匹配的部分填充 NaN。  
-- **Left Join（左连接）**：保留左侧数据集的所有行，并匹配右侧数据集中的数据。  
-- **Right Join（右连接）**：保留右侧数据集的所有行，并匹配左侧数据集中的数据。  
-
-![四种合并方式](../img/four-types-of-merge.png)
