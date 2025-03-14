@@ -291,7 +291,7 @@ df.dropna(inplace=True) # 先把所有有缺失值的行去掉，以免影响模
 
 ### 4.2 Test Design
 #### 4.2.1 Splitting data
-To split the data we will be using a function called [**train_test_split**](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html) from **Sklean**.<br><br>
+To split the data we will be using a function called [**train_test_split**](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.train_test_split.html) from **Sklearn**.<br><br>
 在构建模型前，我们需要把数据分成 训练集 和 测试集：
 - 训练集（train set）：用于训练模型
 - 测试集（test set）：用于评估模型性能
