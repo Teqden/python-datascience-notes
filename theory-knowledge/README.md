@@ -106,6 +106,120 @@ If a value is bigger or smaller than 3 times the standard deviation (σ). 如果
 Presence of many true outliers can influence data science decisions. 多个真实异常值的存在可能会影响数据科学决策。<br>
 Some machine learning algorithms are more robust to outliers than others. 一些机器学习算法对异常值更为稳健。
 
+### 3.5 Correlation
+Measures the strength and direction of relationship between two variables<br>
+Values range from -1 to +1：**Positive correlation (+)，Negative correlation (-)，No correlation (≈ 0)**<br>
+Correlation ≠ Causation<br>
+![Correlation](../img/correlation.png)
+
+#### 3.5.1 Pearson Correlation (r)
+Measures linear relationship between continuous variables 测量连续变量之间的线性关系<br><br>
+
+**Assumptions 假设:**<br>
+Linear relationship 线性关系<br>
+Variables are continuous 变量是连续的<br>
+No significant outliers 没有显著的异常值<br>
+Normal distribution (for hypothesis testing) 正态分布（用于假设检验）<br><br>
+
+**Strength interpretation guidelines 强度解释指南:**<br>
+0.00-0.19: Very weak<br>
+0.20-0.39: Weak<br>
+0.40-0.59: Moderate 中等<br>
+0.60-0.79: Strong<br>
+0.80-1.00: Very strong<br>
+Same applies for negative values 负值也一样<br>
+Statistical significance matters!统计显著性很重要！<br>
+p-value determines if correlation is statistically significant p 值确定相关性是否具有统计显著性<br><br>
+
+Statistical significance - How likely is the observed correlation due to random chance? 统计显著性 - 观察到的相关性由于随机因素而产生的可能性有多大？<br>
+Represented by p-value - Probability of observing the correlation if no true relationship exists 用 p 值表示 - 如果不存在真实关系，则观察到相关性的概率<br>
+p < 0.05: Significant (5% chance of false positive) 显著（假阳性的概率为 5%）<br>
+p < 0.01: Highly significant (1% chance of false positive) 高度显著（假阳性的概率为 1%）<br>
+p < 0.001: Very highly significant (0.1% chance of false positive) 非常显著（假阳性的概率为 0.1%）<br>
+Small samples: even strong correlations may not be significant 即使强相关性也可能不显著<br>
+Large samples: even weak correlations may be significant 即使弱相关性也可能显著<br><br>
+
+**Pearson Correlation - downsides**<br>
+Only detects linear relationships 仅检测线性关系<br>
+Sensitive to outliers 对异常值敏感<br>
+Assumes normality for hypothesis testing 假设检验为正态性<br>
+May miss important non-linear patterns 可能会错过重要的非线性模式<br><br>
+
+#### 3.5.2 Spearman’s Rank
+Measures monotonic relationships (both linear and non-linear). Monotonic: variables change together, but not necessarily at a constant rate 测量单调关系（线性和非线性）。单调：变量一起变化，但不一定以恒定的速率变化<br>
+Based on ranks of data rather than absolute values 基于数据的等级而不是绝对值<br><br>
+Use when:<br>
+Data may have non-linear relationships 数据可能具有非线性关系<br>
+Working with ordinal data 使用序数数据<br>
+Dealing with outliers 处理异常值<br>
+Distribution assumptions are violated 违反分布假设<br><br>
+
+**Pearson vs Spearman**
+|Pearson|Spearman|
+|--|--|
+|Data follows linearrelationship 数据遵循线性关系|Potentially non-linear but monotonic relationships 可能非线性但单调的关系|
+|Interval or ratio data 区间或比率数据|Ordinal, interval, or ratio data 序数、区间或比率数据|
+|Normally distributed 正态分布|Non-normallydistributeddata 非正态分布数据|
+|Few or no outliers 异常值很少或没有|Presenceof outliers 存在异常值|
+|Continuous variables 连续变量|Ranked data 排序数据|
+
+#### 3.5.3 Usage
+**Correlation Matrices 矩阵**
+`pandas.DataFrame.corr`. Uses Pearson, but you can change the method.<br><br>
+
+Tabular representation of pairwise correlations 成对相关性的表格表示<br>
+Rows and columns represent variables 行和列代表变量<br>
+Each cell shows correlation between two variables 每个单元格显示两个变量之间的相关性<br>
+Diagonal always equals 1 (variable with itself) 对角线始终等于 1（变量与自身）<br>
+Symmetric matrix 对称矩阵 `(corr(X,Y) = corr(Y,X))`<br><br>
+
+**Correlation Heatmaps 热图**<br>
+Visual representation of correlation matrix 相关性矩阵的可视化表示<br>
+Colors indicate correlation strength and direction 颜色表示相关性强度和方向<br>
+Easy to spot patterns and relationships 易于发现模式和关系<br>
+Can be sorted or clustered for better insights 可以进行排序或聚类以获得更好的洞察力<br><br>
+
+Look for bright colors (strong correlations) 寻找明亮的颜色（强相关性）<br>
+Identify clusters of correlated features 识别相关特征的聚类<br>
+Pay attention to correlations with target variable 注意与目标变量的相关性<br>
+Examine both positive and negative correlations 检查正相关和负相关<br>
+Consider domain knowledge when interpreting results 解释结果时考虑领域知识<br><br>
+
+**Pairplots** - `seaborn.pairplot`<br>
+Shows pairwise relationships between multiple variables 显示多个变量之间的成对关系<br>
+Combines scatter plots and histograms/density plots 结合散点图和直方图/密度图<br>
+Scatter plots below diagonal, distributions on diagonal 对角线下方的散点图，对角线上的分布<br>
+Canuse color points by categorical variable 可以按分类变量使用颜色点<br>
+Great for exploratory data analysis in data understanding 非常适合数据理解中的探索性数据分析<br><br>
+
+**Clustered Correlation Matrix 聚类相关矩阵** - `seaborn.clustermap`<br>
+Rearranges correlation matrix based on similarity 根据相似性重​​新排列相关矩阵<br>
+Brings highly correlated variables together 将高度相关的变量组合在一起<br>
+Helps identify feature clusters automatically using the dendogram 帮助使用树状图自动识别特征聚类
+
+#### 3.5.4 Redundancy
+**Redundant features 冗余特征:**<br>
+Highly correlated with other features 与其他特征高度相关<br>
+Provide similar information 提供类似信息<br>
+Add complexity without adding value 增加复杂性而不增加价值<br><br>
+
+**Impact on models:**<br>
+Increase training time 增加训练时间<br>
+Can lead to overfitting 可能导致过度拟合<br>
+May cause multicollinearity in regression 可能导致回归中的多重共线性<br>
+Reduce model interpretability 降低模型的可解释性<br>
+Increase risk of overfitting to noise 增加过度拟合噪声的风险<br><br>
+
+**Redundancy – Identifying redundant features 识别冗余特征**<br>
+Use correlation matrix to identify highly correlated pairs 使用相关矩阵识别高度相关的对 - Common thresholds 常见阈值: `|r| > 0.7`, Strong correlation, potential redundancy; `|r| > 0.9`, Very strong correlation, likely redundancy<br>
+Look for correlation clusters 寻找相关性簇<br>
+Consider correlations with target variable 考虑与目标变量的相关性<br><br>
+
+**Redundancy – How to handle**<br>
+Feature selection 特征选择:Keep one feature from each correlated group; Choose based on correlation with target or interpretability 从每个相关组中保留一个特征；根据与目标的相关性或可解释性进行选择<br>
+Feature engineering (create new features) 特征工程（创建新特征）: Ratios or differences between correlated features 相关特征之间的比率或差异<br>
+Domain knowledge 领域知识: Use subject expertise to select most relevant features 使用主题专业知识来选择最相关的特征
+
 ## 4. Data Preparation
 ### 4.1 Different Errors
 - **Typos**: e.g., "Asmterdam" -> "Amsterdam", "1234a" in a numerical column.
@@ -174,6 +288,69 @@ Modifying datasets can have significant consequences, such as over-imputing miss
 - Introduced bias. 引入偏见。
 - Reduced data size. 减少数据大小。
 
+##### 4.1.4.1 Forward fill & Backward fill
+Alternative method for handling missing data. 处理缺失数据的替代方法。<br>
+Especially useful for data that has a useful order: Timeseries data, Sequential data 对于具有有用顺序的数据特别有用：时间序列数据、顺序数据<br>
+You infer missing data from nearby observations 您从附近的观测值推断缺失数据<br><br>
+
+**Forward Fill 正向填充**<br>
+Missing values are replaced with the last observed value in the dataset 缺失值将替换为数据集中的最后一个观测值<br>
+Works well when missing values are likely to have the same value as the previous observation. 当缺失值可能与前一个观测值具有相同的值时，这种方法效果很好。<br>
+In a time-series dataset of daily temperatures, if one day’s temperature is missing, it can be filled with the previous day’s temperature 在每日温度的时间序列数据集中，如果某一天的温度缺失，可以用前一天的温度填充<br><br>
+
+**Backward Fill 反向填充**<br>
+Missing values are replaced with the next observed value in the dataset. 缺失值将替换为数据集中的下一个观测值。<br>
+Useful when missing values are assumed to be similar to the next available observation. 当假设缺失值与下一个可用观测值相似时，这种方法很有用。<br>
+In a dataset of product prices, if a price is missing for one day, it can be filled with the price from the following day. 在产品价格数据集中，如果某一天的价格缺失，可以用第二天的价格填充。<br><br>
+
+**Forward fill & Backward fill – pros & cons 正向填充和反向填充 - 优点和缺点**<br>
+**pros 优点:**<br>
+Simple and intuitive to implement 简单直观<br>
+Preserves trends and continuity in ordered dataset 保留有序数据集中的趋势和连续性<br>
+Avoids introducing artificial averages (as mean/median imputation does) 避免引入人为平均值（如平均值/中位数插补）<br>
+**cons 缺点:**<br>
+Can propagate incorrect values if the assumption about continuity is invalid 如果连续性假设无效，则可能传播不正确的值<br>
+Not suitable for unordered datasets or datasets with large gaps 不适用于无序数据集或具有较大间隙的数据集<br>
+May lead to over-representation of certain values in datasets with frequently missing values 可能导致在经常缺失值的数据集中过度表示某些值<br><br>
+
+Using `df.fillna(method='ffill')` for forward fill, can also choose the method from `'backfill', 'bfill', 'ffill' and the default 'None'`.
+
+#### 4.1.5 Independence
+Independence means that the outcome of one event is not influenced by the outcome of another event. 独立性意味着一个事件的结果不受另一个事件结果的影响。<br>
+Two random variables are independent if the realization of one does not affect the probability distribution of the other. 如果一个随机变量的实现不会影响另一个随机变量的概率分布，则两个随机变量是独立的。<br>
+Violations of independence can lead to biased models or overfitting. Some observations might unfairly influence results. 违反独立性可能导致模型有偏差或过度拟合。某些观察结果可能会不公平地影响结果。<br><br>
+
+**Independence in machine learning – features (variables) 机器学习中的独立性 - 特征（变量）**<br>
+Independence between features means that one feature does not predict another. 特征之间的独立性意味着一个特征不能预测另一个特征。<br>
+When predicting house prices: number of bedrooms and house size are likely dependent. 预测房价时：卧室数量和房屋大小可能相互依赖。<br><br>
+
+**Independence in machine learning – observations (rows) 机器学习中的独立性 - 观察值（行）**<br>
+Independence between observations means that one data point does not affect another. 观察值之间的独立性意味着一个数据点不会影响另一个数据点。<br>
+For customer churn: each customer's decision to leave or stay should be independent of other customers' decisions. 对于客户流失：每个客户离开或留下的决定应该独立于其他客户的决定。<br><br>
+
+**Violations of independence 违反独立性**<br>
+If duplicate rows exist in a dataset, they violate independence because they represent the same data point multiple times. 如果数据集中存在重复的行，则它们违反独立性，因为它们多次表示相同的数据点。<br>
+If data points are grouped by a shared factor (e.g., location, family), they may not be independent. 如果数据点按共享因素（例如位置、家庭）分组，则它们可能不独立。
+
+#### 4.1.6 Representativity
+Representativity means that your dataset reflects the broader population or phenomenon you’re studying. 代表性意味着您的数据集反映了您正在研究的更广泛的人群或现象。<br>
+If your data is not representative, your model won’t be able to generalize to new data (difference trainset-testset) 如果您的数据不具代表性，您的模型将无法推广到新数据（差异训练集-测试集）<br>
+For example: voter preference of one city is not representative for the entire country. 例如：一个城市的选民偏好并不代表整个国家。<br><br>
+
+Non-representative datasets can introduce bias, leading to incorrect or unfair conclusions. 非代表性数据集可能会引入偏见，导致不正确或不公平的结论。<br>
+Representativity ensures that all relevant subgroups are included and accounted for in the analysis. 代表性确保所有相关子群体都包括在分析中并得到考虑。<br><br>
+
+**Representativity– how to check 代表性——如何检查**<br>
+Check for missing sub-groups - Are groups missing or underrepresented? 检查缺失的子群体 - 群体是否缺失或代表性不足？<br>
+Compare dataset to population - Do the distributions of key features match? 将数据集与人口进行比较 - 关键特征的分布是否匹配？<br>
+Check for selection bias - Was the data collected in a way that excludes certain groups? 检查选择偏差 - 数据收集的方式是否排除了某些群体？<br><br>
+
+**Representativity– how to fix 代表性——如何解决**<br>
+A lot of these issues are in the data collection phase that you don’t (always) control 很多这些问题都发生在数据收集阶段，而你（总是）无法控制<br>
+Ensure proportional data collection 确保按比例收集数据<br>
+Assign weights to underrepresented groups - Be careful with this, though 为代表性不足的群体分配权重 - 但要小心谨慎<br>
+Adddata from underrepresented groups 添加代表性不足的群体的数据
+
 ## 5. Modeling
 Models are representations of reality used to understand, predict, or control real-world phenomena. All models are approximations, usually with a trade-off between **Simplicity** and **Accuracy**. <br>
 模型是用于理解、预测或控制现实世界现象的现实表征。所有模型都是近似值，通常在**简单性**与**准确性**之间需要权衡。
@@ -204,22 +381,7 @@ Models are representations of reality used to understand, predict, or control re
 
 ### 5.3 Benchmark Models 基准模型
 - A benchmark provides a baseline for more advanced models. 基准提供了一个给更高级模型的基线。
-- Simple. 简单。Interpretable. 可解释。
-
-### 5.4 Metrics 指标
-**Metrics**（指标）用于衡量模型的性能。
-
-- **Mean Absolute Error (MAE) 平均绝对误差**  
-  - **适用于回归模型的评估指标**（An metric for regression models）。  
-  - 计算方法：实际值与预测值之间**绝对误差的平均值**（The average of the absolute differences between the actual values and the predicted values）。  
-  - **特点**：MAE 对所有误差给予相同的权重（MAE treats all errors equally）。
-
-- **Mean Squared Error (MSE) 均方误差**  
-  - 与 MAE 不同，MSE 计算的是**误差的平方**（Instead of taking the absolute error, you take the squared error）。  
-  - **特点**：较大的误差在平方后变得更大，因此 MSE 会**惩罚较大的误差**（MSE punishes larger errors more when that is important）。
-
-- **Root Mean Squared Error (RMSE) 均方根误差**  
-  - RMSE 是 MSE 的平方根，能够更直观地表示误差的实际大小。  
+- Simple. 简单。Interpretable. 可解释。  
 
 ### 5.5 Training & Testing 训练与测试
 模型的质量取决于在**训练集-测试集划分**（test-train split）后的表现。
@@ -253,6 +415,64 @@ Models are representations of reality used to understand, predict, or control re
 - **下一步应该做什么？**（What should be done next?）。  
   - **进一步优化**（Further refinement）。  
   - **部署建议**（Recommendations for deployment）。
+
+### 6.1 Metrics 指标
+#### 6.1.1 MAE & MSE & RMSE
+**Metrics**（指标）用于衡量模型的性能。
+
+- **Mean Absolute Error (MAE) 平均绝对误差**  
+  - **适用于回归模型的评估指标**（An metric for regression models）。  
+  - 计算方法：实际值与预测值之间**绝对误差的平均值**（The average of the absolute differences between the actual values and the predicted values）。  
+  - **特点**：MAE 对所有误差给予相同的权重（MAE treats all errors equally）。
+
+- **Mean Squared Error (MSE) 均方误差**  
+  - 与 MAE 不同，MSE 计算的是**误差的平方**（Instead of taking the absolute error, you take the squared error）。  
+  - **特点**：较大的误差在平方后变得更大，因此 MSE 会**惩罚较大的误差**（MSE punishes larger errors more when that is important）。
+
+- **Root Mean Squared Error (RMSE) 均方根误差**  
+  - RMSE 是 MSE 的平方根，能够更直观地表示误差的实际大小。
+
+#### 6.1.2 Evaluating Classification Models
+- True Positive (TP) 真阳性: Correctly predicted the positive class 正确预测了阳性类别
+- True Negative (TN) 真阴性: Correctly predicted the negative class 正确预测了阴性类别
+- False Positive (FP) 假阳性: Incorrectly predicted the positive class (Type I error) 错误预测了阳性类别（I 类错误）
+- False Negative (FN) 假阴性: Incorrectly predicted the negative class (Type II error) 错误预测了阴性类别（II 类错误）
+
+##### 6.1.2.1 Confusion Matrix 混淆矩阵
+一般使用错误率（Error Rate）和准确率（Accuracy）作为评估指标（Evaluation Metrics）
+|Metric|Description|
+|--|--|
+|Error Rate (misclassification rate) 错误率（误分类率）|The amount of errors made `(FN+FP) / total` and `1 - accuracy` 错误数量|
+|Accuracy 准确率|The amount of times a correct prediction is made `(TP+TN) / total` and `1 - error rate` 正确预测的次数|
+|True Positive Rate (TPR) [sensitivity, recall, hit rate] 真阳性率（TPR）[敏感度、召回率、命中率]|How many of the actual positive instances were correctly predicted? `TP / (TP + FN)` 实际正确预测了多少个阳性实例|
+|True Negative Rate (TNR) [specificity, selectivity] 真阴性率（TNR）[特异性、选择性]|How many of the actual negative instances were correctly predicted? `TN / (TN + FP)` 实际正确预测了多少个阴性实例|
+|Positive Predictive Value (PPV) [precision] 阳性预测值（PPV）[精确度]|How many of the positive predictions were actually positive? `TP / (TP + FP)` 阳性预测中有多少实际上是阳性|
+
+<br>
+<br>
+
+**Sensitivity (Recall) 敏感度（召回率）vs Specificity 与特异性 vs Precision 准确率**
+- Sensitivity 敏感度: how well do we detect positives (lower false negatives) 我们如何很好地检测阳性（较低的假阴性）
+- Specificity 特异性: how well do we detect negatives (lower false positives) 我们如何很好地检测阴性（较低的假阳性）
+- Precision 准确率: when the model says 'yes,' how often is it right 当模型说“是”时，它正确的频率是多少
+
+<br>
+
+Scenario 1 – High Precision 准确度高<br>
+A fraud detection system flags 10 transactions, 9 of which are fraudulent. Precision = 90%. It misses 50 other fraudulent transactions (low recall).<br>
+假设目前有100笔交易，欺诈系统只检测了10笔欺诈交易出来，但实际上有60笔，它漏掉了50笔，说明它是低敏感度，但是10笔中9笔都是真的欺诈交易，说明准确度很高。
+<br>
+
+Scenario 2 – High Recall 敏感度高<br>
+<br>
+癌症检测，100个案例中查出95个有癌症，说明它是高敏感度，但是其中很多误诊（false positives），说明它的准确度不高。
+<br>
+
+There is a tradeoff between precision and recall. You can adjust thresholds to favor one over the other. 准确率和召回率之间存在权衡。您可以调整阈值以偏向其中一个。
+
+##### 6.1.2.2 F1 score
+harmonic mean of precision and recall. Ranges from 0 to 1.0 (perfect). 准确率和召回率的调和平均值。范围从 0 到 1.0（完美）。<br>
+公式：F1 = 2 * (Precision * Recall) / (Precision + Recall)
 
 ## 7. Classification & Merging 分类与合并
 ### 7.1 **Classification 分类**
@@ -315,54 +535,14 @@ Use nested if-else statements 使用嵌套的 if-else 语句
 - Use if-else statements for rule-based banchmark models 对基于规则的标记模型使用 if-else 语句
 - Use nested if-else statements for decision tree benchmark models 对决策树基准模型使用嵌套的 if-else 语句
 
-#### 7.4.3 Evaluating Classification Models
-- True Positive (TP) 真阳性: Correctly predicted the positive class 正确预测了阳性类别
-- True Negative (TN) 真阴性: Correctly predicted the negative class 正确预测了阴性类别
-- False Positive (FP) 假阳性: Incorrectly predicted the positive class (Type I error) 错误预测了阳性类别（I 类错误）
-- False Negative (FN) 假阴性: Incorrectly predicted the negative class (Type II error) 错误预测了阴性类别（II 类错误）
-
-##### 7.4.3.1 Confusion Matrix 混淆矩阵
-一般使用错误率（Error Rate）和准确率（Accuracy）作为评估指标（Evaluation Metrics）
-|Metric|Description|
-|--|--|
-|Error Rate (misclassification rate) 错误率（误分类率）|The amount of errors made `(FN+FP) / total` and `1 - accuracy` 错误数量|
-|Accuracy 准确率|The amount of times a correct prediction is made `(TP+TN) / total` and `1 - error rate` 正确预测的次数|
-|True Positive Rate (TPR) [sensitivity, recall, hit rate] 真阳性率（TPR）[敏感度、召回率、命中率]|How many of the actual positive instances were correctly predicted? `TP / (TP + FN)` 实际正确预测了多少个阳性实例|
-|True Negative Rate (TNR) [specificity, selectivity] 真阴性率（TNR）[特异性、选择性]|How many of the actual negative instances were correctly predicted? `TN / (TN + FP)` 实际正确预测了多少个阴性实例|
-|Positive Predictive Value (PPV) [precision] 阳性预测值（PPV）[精确度]|How many of the positive predictions were actually positive? `TP / (TP + FP)` 阳性预测中有多少实际上是阳性|
-
-<br>
-<br>
-
-**Sensitivity (Recall) 敏感度（召回率）vs Specificity 与特异性 vs Precision 准确率**
-- Sensitivity 敏感度: how well do we detect positives (lower false negatives) 我们如何很好地检测阳性（较低的假阴性）
-- Specificity 特异性: how well do we detect negatives (lower false positives) 我们如何很好地检测阴性（较低的假阳性）
-- Precision 准确率: when the model says 'yes,' how often is it right 当模型说“是”时，它正确的频率是多少
-
-<br>
-
-Scenario 1 – High Precision 准确度高<br>
-A fraud detection system flags 10 transactions, 9 of which are fraudulent. Precision = 90%. It misses 50 other fraudulent transactions (low recall).<br>
-假设目前有100笔交易，欺诈系统只检测了10笔欺诈交易出来，但实际上有60笔，它漏掉了50笔，说明它是低敏感度，但是10笔中9笔都是真的欺诈交易，说明准确度很高。
-<br>
-
-Scenario 2 – High Recall 敏感度高<br>
-<br>
-癌症检测，100个案例中查出95个有癌症，说明它是高敏感度，但是其中很多误诊（false positives），说明它的准确度不高。
-<br>
-
-There is a tradeoff between precision and recall. You can adjust thresholds to favor one over the other. 准确率和召回率之间存在权衡。您可以调整阈值以偏向其中一个。
-
-
-### 7.5 **Visualization 可视化**
+### 8 **Visualization 可视化**
 可视化的作用：
 - **揭示模式、趋势和相关性**（Reveal patterns, trends, and correlations）。  
 - **对大型数据集进行可视化总结**（Visually summarize large datasets）。  
 - **识别异常值或离群点**（Identify outliers or anomalies）。  
 - **有效传达研究发现**（Help communicate findings effectively）。  
 
-### 7.5.1 常见图表
-
+### 8.1 常见图表
 **直方图（Histogram）**
 - **用于显示数值数据的分布**（Used to show the distribution of numerical data）。  
 - **数据被分到不同的区间（Bins）**（Data is grouped into intervals (bins)）。  
