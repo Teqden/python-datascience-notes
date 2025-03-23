@@ -394,6 +394,236 @@ Models are representations of reality used to understand, predict, or control re
 
 - **在训练集上测试时，评估指标通常优于测试集**（Evaluation metrics tend to be better when testing the model on the train set than on the test set）。
 
+### 5.6 Correlation Analysis 相关性分析
+Correlation analysis: measuring relationships between variables 测量变量之间的关系
+
+#### 5.6.1 相关性基础
+Correlation: describes relationships in historical data 描述历史数据中的关系<br>
+Correlation $\neq$ Causation 相关性 $\neq$ 因果关系<br>
+Visualization techniques for relationships (scatter plot, correlation matrix, heatmap,...) 关系的可视化技术（散点图、相关矩阵、热图等）
+
+#### 5.6.2 相关性类型
+Pearson vs. Spearman correlation 皮尔逊与斯皮尔曼相关性<br>
+Statistical significance 统计显著性
+
+#### 5.6.3 相关性与预测
+Prediction: uses relationships to forecast new outcomes 预测：利用关系预测新结果<br>
+Connection between correlation and model performance 相关性与模型性能之间的联系：<br>
+Features highly correlated with target $\rightarrow$ potentially good predictors 与目标高度相关的特征 $\rightarrow$ 可能是良好的预测因子<br>
+Features with low correlation $\rightarrow$ potentially less useful 低相关性的特征 $\rightarrow$ 可能用处较小<br>
+Highly correlated features $\rightarrow$ potential redundancy 高度相关的特征 $\rightarrow$ 可能存在冗余
+Redundant features 冗余特征
+
+### 5.7 Linear Regression 线性回归
+#### 5.7.1 基本概念
+Predicts continuous target variables 预测连续的目标变量<br>
+Models linear relationship between features and target 建模特征与目标之间的线性关系<br>
+Goal: Find coefficients that minimize prediction error 目标：找到使预测误差最小的系数
+
+#### 5.7.2 普通最小二乘法 (Ordinary Least Squares, OLS)
+Minimizes sum of squared differences between actual and predicted values 最小化实际值与预测值之间的平方差之和<br>
+Formula 公式: minimize $\Sigma\left(y_i-y_i\right)^2$<br>
+LinearRegression fits a linear model with coefficients $w=(w 1, \ldots, w p)$ to minimize the residual sum of squares between the observed targets in the dataset, and the targets predicted by the linear approximation. 线性回归通过系数 $w=(w 1, \ldots, w p)$ 拟合线性模型，以最小化数据集中观测目标与线性近似预测目标之间的残差平方和。
+
+#### 5.7.3 假设 (Assumptions)
+Linearity: Relationship between features and target is linear 线性：特征与目标之间的关系是线性的<br>
+Independence: Observations are independent of each other 独立性：观测值之间相互独立<br>
+No multicollinearity: Features are not highly correlated with each other 无多重共线性：特征之间没有高度相关性<br>
+No outliers: Extreme values can disproportionately influence the model 无异常值：极端值不会对模型产生不成比例的影响<br><br>
+
+Additionally: there are more ways to check for these assumptions 另外：有更多方法可以检查这些假设<br><br>
+
+Linear data: points should align closely with the regression line 线性数据：数据点应与回归线密切对齐<br>
+Non-linear data: points show a (non-)pattern that the linear model fails to capture 非线性数据：数据点显示线性模型无法捕捉的（非）模式
+
+#### 5.7.4 实现步骤 (How to Implement)
+Don't forget the test-train split! 不要忘记测试-训练拆分！<br>
+Set the model to the LinearRegression model 将模型设置为线性回归模型<br>
+Fit the model to the train data using model.fit 使用 model.fit 将模型拟合到训练数据<br>
+Create the predictions for the test set using model.predict 使用 model.predict 为测试集创建预测<br>
+Evaluate using appropriate metrics 使用适当的指标进行评估
+
+```python
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=10)
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+```
+
+#### 5.7.5 评估指标 - $R^2$ (Coefficient of Determination)
+The coefficient of determination $\left(R^2\right)$ 决定系数 $\left(R^2\right)$<br>
+Measures how well the model explains the variance in the target 测量模型解释目标方差的程度<br>
+Values range from 0 to $1(0%-100%)$ 值范围从0到1（0%-100%）<br>
+$\mathrm{R}^2=0.7$ means model explains $70%$ of variance in target 表示模型解释了目标70%的方差<br>
+Higher $\mathrm{R}^2$ indicates better fit 更高的 $\mathrm{R}^2$ 表示更好的拟合<br>
+In a simple regression with 1 regressor 在只有一个回归变量的简单回归中, $\mathrm{R}^2=$ (Pearson $\mathrm{r})^2$ You can directly compare $\mathrm{R}^2$ between models, however RMSE and MAE may give different information about model quality with regards to the errors that it makes. 你可以直接比较模型之间的 $\mathrm{R}^2$，然而 RMSE 和 MAE 可能会提供关于模型质量的不同信息，涉及它所产生的误差。<br>
+$\mathrm{R}^2$ does not tell us anything about significance of coefficients 无法告诉我们关于系数显著性的任何信息<br>
+from sklearn.metrics import r2_score 从 sklearn.metrics 导入 r2_score
+
+#### 5.7.6 特征重要性 (Feature Importance)
+$\beta_0, \beta_1, \beta_2, \ldots, \beta_n$ : coefficients 系数<br>
+positive $=$ feature increases target 正数 $=$ 特征增加目标值<br>
+negative $=$ feature decreases target 负数 $=$ 特征减少目标值<br>
+larger magnitude $=$ stronger effect 更大的幅度 $=$ 更强的效果<br>
+Feature importance: How "important" is each feature in making the prediction? A standardized coefficients for comparison 特征重要性：每个特征在预测中的“重要性”如何？标准化系数用于比较
+
+#### 5.7.7 优化 (Optimization)
+Feature selection techniques 特征选择技术：<br>
+Based on correlation analysis 基于相关性分析<br>
+Forward/backward selection 前向/后向选择<br><br>
+
+Handling multicollinearity 处理多重共线性：<br>
+Remove highly correlated features 移除高度相关的特征<br><br>
+
+Feature engineering 特征工程：<br>
+Transformations for non-linear relationships 非线性关系的变换
+
+#### 5.7.8 交叉验证 (Cross-validation)
+Cross-validation helps assess how well our model generalizes to new data 交叉验证帮助评估我们的模型在新数据上的泛化能力<br>
+K-FOLD CROSS VALIDATION K折交叉验证
+
+### 5.8 Decision Tree 决策树
+#### 5.8.1 决策树分类器 (Decision Tree Classifier)
+Decision Tree Classifier 决策树分类器<br>
+Classification trees makes predictions for your output, based on the feature thresholds 分类树根据特征阈值对输出进行预测<br>
+Non-linear model that splits the data based on their values 非线性模型，根据数据值分割数据<br>
+IF-THEN rules determine the predictions 规则决定预测<br>
+Easy to understand and interpret 易于理解和解释<br>
+No data distribution assumptions 无需数据分布假设<br>
+Features can be numerical and categorical 特征可以是数值型和类别型<br>
+Does the feature selection for you 为你进行特征选择<br>
+A Decision Tree Regressor can be used for regression problems 决策树回归器可用于回归问题
+
+#### 5.8.2 分类树的工作原理
+Classification trees predict categorical outcomes 分类树预测类别结果<br>
+Binary classification: Yes/No, True/False decisions 二元分类：是/否、真/假决策<br>
+Multi-class classification: more than two categories 多类分类：超过两个类别<br>
+The splits happen based on gini impurity (measuring node purity) or entropy (information gain) 分割基于吉尼不纯度（测量节点纯度）或熵（信息增益）<br><br>
+
+Tree growth algorithm 树生长算法：<br>
+Select best feature + threshold to split on (maximize information gain) 选择最佳特征和阈值进行分割（最大化信息增益）<br>
+Create child nodes based on split 根据分割创建子节点<br>
+Recursively repeat for each child node 对每个子节点递归重复<br>
+Stop when criteria met (e.g. max depth met) 当满足停止条件时停止（例如达到最大深度）<br><br>
+
+Gini impurity measures how often a randomly chosen element of a set would be incorrectly labeled if it were labeled randomly and independently according to the distribution of labels in the set. 吉尼不纯度测量如果根据集合中标签分布随机且独立地标记，一个随机选择的元素被错误标记的频率。<br>
+When all nodes fall into one target category, Gini impurity reaches 0. 当所有节点落入一个目标类别时，吉尼不纯度达到0。<br>
+Entropy measures the information gain from a split, based on information theory. 熵根据信息理论测量分割的信息增益。<br>
+Both aim to create child nodes with more homogeneous class distributions than the parent, so the node becomes more specific. 两者都旨在创建比父节点更均匀的类别分布的子节点，使节点更具体。
+
+#### 5.8.3 实现步骤 (How to Implement)
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+from sklearn.tree import plot_tree
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=11)
+model = DecisionTreeClassifier(random_state=10)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+print(accuracy_score(y_test, y_pred))
+print(classification_report(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
+
+plt.figure(figsize=(15,10))
+plot_tree(model, feature_names=COLUMNS, class_names=["Class_A", "Class_B"], filled=True, max_depth=3)
+plt.show()
+```
+
+#### 5.8.4 过拟合问题 (Overfitting)
+Overfitting: model learns training data too well, including noise 过拟合：模型过于学习训练数据，包括噪声<br><br>
+
+Signs of overfitting 过拟合的迹象：<br>
+High training accuracy, low test accuracy 高训练准确度，低测试准确度<br>
+Excessively complex tree structure 过于复杂的树结构<br>
+Perfect predictions on training data 在训练数据上完美预测<br><br>
+
+Consequences 后果：<br>
+Poor generalization to new data (train test difference) 对新数据的泛化能力差（训练测试差异）<br>
+Unstable predictions (small change in input -> large change in output) 不稳定的预测（输入的小变化 -> 输出的巨大变化）<br>
+Lack of model robustness (does not work in real-life) 缺乏模型鲁棒性（在现实生活中不起作用）<br><br>
+
+Why it happens in decision trees 为什么在决策树中发生：<br>
+The tree is too deep (too many splits, too many rules) 树太深（太多分割，太多规则）<br>
+Leaf nodes have few samples (not enough data for predictions) 叶节点样本太少（预测数据不足）<br>
+Data is very noisy (causing random splits, instead of true patterns) 数据噪声很大（导致随机分割，而不是真实模式）
+
+#### 5.8.5 防止过拟合 (Preventing Overfitting)
+Stop the tree from growing by setting parameters, such as 通过设置参数阻止树生长，例如：<br>
+max_depth 最大深度<br>
+min_samples_split 最小分割样本数<br>
+max_features 最大特征数<br>
+min_samples_leaf 最小叶节点样本数<br><br>
+
+This way, we are preventing splits in order to control model complexity to improve generalization 这样，我们通过防止分割来控制模型复杂性以提高泛化能力<br>
+Cross-validation can find you the optimal parameters to balance performance and complexity. 交叉验证可以为你找到平衡性能和复杂性的最佳参数。<br>
+This is also called hyper-parameter tuning. 这也称为超参数调优。<br>
+
+```python
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score
+
+param_grid = {
+    'max_depth': [3, 5, 10, 12],
+    'min_samples_split': [2, 5, 8],
+    'min_samples_leaf': [1, 2, 4]
+}
+
+model = DecisionTreeClassifier(random_state=10)
+grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy', n_jobs=-1)
+grid_search.fit(X_train, y_train)
+
+best_params = grid_search.best_params_
+best_model = grid_search.best_estimator_
+y_pred = best_model.predict(X_test)
+test_accuracy = accuracy_score(y_test, y_pred)
+```
+
+### 5.9 Model Selection and Optimization 模型选择与优化
+#### 5.9.1 选择依据
+Choose based on the 'data science question' 根据“数据科学问题”选择<br>
+Choose model based on data understanding insights 根据数据理解洞察选择模型<br>
+Consider features and parameters based on data understanding insights and business needs 根据数据理解洞察和业务需求考虑特征和参数<br>
+Evaluate properly using relevant and different metrics, as they provide different perspectives 使用相关且不同的指标进行适当评估，因为它们提供不同视角
+
+#### 5.9.2 线性回归 vs 决策树
+**Linear Regression 线性回归**<br>
+When? Continuous data, linear relationship, coefficients are interesting 什么时候用？连续数据、线性关系、系数有意义时<br><br>
+
+Pros 优点<br>
+Interpretable & understandable 可解释且易于理解<br>
+Efficient 高效<br>
+Works fairly well with limited data 在数据有限时表现尚可<br><br>
+
+Cons 缺点<br>
+Assumes linearity 假设线性<br>
+Cannot properly capture complex patterns 无法正确捕捉复杂模式<br>
+Sensitive to outliers 对异常值敏感<br><br>
+
+**Decision Tree 决策树**<br>
+When? Non-linear relationship, categorical data, decision rules are interesting 什么时候用？非线性关系、类别数据、决策规则有意义时<br><br>
+
+Pros 优点<br>
+Interpretable & understandable 可解释且易于理解<br>
+Handles non-linearity 处理非线性<br>
+Feature interaction is incorporated 包含特征交互<br><br>
+
+Cons 缺点<br>
+Risk of overfitting 过拟合风险<br>
+Small changes in data can have big effects 数据的小变化可能产生大影响
+
 ## 6. Evaluation 评估
 1. **评估模型性能**（Assess model performance）。  
 2. **解释结果**（Interpretation of results）。  
